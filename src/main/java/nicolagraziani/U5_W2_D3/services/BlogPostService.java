@@ -5,7 +5,6 @@ import nicolagraziani.U5_W2_D3.entities.Author;
 import nicolagraziani.U5_W2_D3.entities.BlogPost;
 import nicolagraziani.U5_W2_D3.exceptions.NotFoundException;
 import nicolagraziani.U5_W2_D3.payloads.BlogPostPayload;
-import nicolagraziani.U5_W2_D3.repositories.AuthorRepository;
 import nicolagraziani.U5_W2_D3.repositories.BlogPostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,16 +17,16 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class BlogPostService {
-    private final AuthorRepository authorRepository;
+    private final AuthorService authorService;
     private final BlogPostRepository blogPostRepository;
 
-    public BlogPostService(BlogPostRepository blogPostRepository, AuthorRepository authorRepository) {
+    public BlogPostService(BlogPostRepository blogPostRepository, AuthorService authorService) {
         this.blogPostRepository = blogPostRepository;
-        this.authorRepository = authorRepository;
+        this.authorService = authorService;
     }
 
     public BlogPost saveBlogPost(BlogPostPayload body) {
-        Author author = this.authorRepository.findById(body.getAuthorId()).get();
+        Author author = this.authorService.findAuthorById(body.getAuthorId());
         BlogPost newBlogPost = new BlogPost(body.getCategory(), body.getTitle(), body.getContent(), body.getReadingTime(), author);
         this.blogPostRepository.save(newBlogPost);
         log.info("Il Post {} è stato pubblicato", body.getTitle());
@@ -47,7 +46,7 @@ public class BlogPostService {
 
     public BlogPost findBlogPostByIdAndUpdate(UUID blogPostId, BlogPostPayload body) {
         BlogPost found = this.findBlogPostById(blogPostId);
-        Author author = this.authorRepository.findById(body.getAuthorId()).get();
+        Author author = this.authorService.findAuthorById(body.getAuthorId());
         found.setCategory(body.getCategory());
         found.setTitle(body.getTitle());
         found.setContent(body.getContent());
