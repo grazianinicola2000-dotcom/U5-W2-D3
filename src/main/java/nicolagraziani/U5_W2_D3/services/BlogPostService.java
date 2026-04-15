@@ -41,7 +41,29 @@ public class BlogPostService {
         return this.blogPostRepository.findAll(pageable);
     }
 
-    public BlogPost findById(UUID blogPostId) {
+    public BlogPost findBlogPostById(UUID blogPostId) {
         return this.blogPostRepository.findById(blogPostId).orElseThrow(() -> new NotFoundException(blogPostId));
+    }
+
+    public BlogPost findBlogPostByIdAndUpdate(UUID blogPostId, BlogPostPayload body) {
+        BlogPost found = this.findBlogPostById(blogPostId);
+        Author author = this.authorRepository.findById(body.getAuthorId()).get();
+        found.setCategory(body.getCategory());
+        found.setTitle(body.getTitle());
+        found.setContent(body.getContent());
+        found.setReadingTime(body.getReadingTime());
+        found.setAuthor(author);
+
+        BlogPost saved = this.blogPostRepository.save(found);
+
+        log.info("Il Post {} è stato modificato con successo", saved.getTitle());
+
+        return saved;
+    }
+
+    public void findByIdAndDelete(UUID blogPostId) {
+        BlogPost found = this.findBlogPostById(blogPostId);
+        this.blogPostRepository.delete(found);
+        log.info("Il Post con id {} è stato eliminato correttamente", blogPostId);
     }
 }

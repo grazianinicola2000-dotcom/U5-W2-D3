@@ -1,9 +1,11 @@
 package nicolagraziani.U5_W2_D3.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -11,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "blogPost")
 public class Author {
     @Id
     @GeneratedValue
@@ -28,6 +30,9 @@ public class Author {
     private LocalDate dateOfBirth;
     @Column(name = "avatar_img_url")
     private String avatarImg;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<BlogPost> blogPost;
 
     public Author(String name, String surname, String email, LocalDate dateOfBirth) {
         this.name = name;

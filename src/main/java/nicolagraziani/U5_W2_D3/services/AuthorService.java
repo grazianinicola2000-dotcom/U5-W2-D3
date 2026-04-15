@@ -44,4 +44,28 @@ public class AuthorService {
     public Author findAuthorById(UUID authorId) {
         return this.authorRepository.findById(authorId).orElseThrow(() -> new NotFoundException(authorId));
     }
+
+    public Author findAuthorByIdAndUpdate(UUID authorId, AuthorPayload body) {
+        Author found = this.findAuthorById(authorId);
+        if (!found.getEmail().equals(body.getEmail())) {
+            if (this.authorRepository.existsByEmail(body.getEmail()))
+                throw new BadRequestException("L'indirizzo email " + body.getEmail() + " è già in uso!");
+        }
+        found.setName(body.getName());
+        found.setSurname(body.getSurname());
+        found.setEmail(body.getEmail());
+        found.setDateOfBirth(body.getDateOfBirth());
+
+        Author saved = this.authorRepository.save(found);
+
+        log.info("L'autore {} {} è stato modificato con successo", saved.getSurname(), saved.getName());
+
+        return saved;
+    }
+
+    public void findAuthorByIdAndDelete(UUID authorId) {
+        Author found = this.findAuthorById(authorId);
+        this.authorRepository.delete(found);
+        log.info("L'autore {} {} è stato eliminato correttamente", found.getSurname(), found.getName());
+    }
 }

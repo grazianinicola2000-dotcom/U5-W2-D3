@@ -18,6 +18,7 @@ public class BlogPostController {
         this.blogPostService = blogPostService;
     }
 
+    //    GET ALL
     @GetMapping
     public Page<BlogPost> findAll(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "10") int size,
@@ -25,14 +26,29 @@ public class BlogPostController {
         return this.blogPostService.findAll(page, size, sortBy);
     }
 
+    //   POST
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public BlogPost saveBlogPost(@RequestBody BlogPostPayload body) {
         return this.blogPostService.saveBlogPost(body);
     }
 
+    //    GET BY ID
     @GetMapping("/{blogPostId}")
     public BlogPost findById(@PathVariable UUID blogPostId) {
-        return this.blogPostService.findById(blogPostId);
+        return this.blogPostService.findBlogPostById(blogPostId);
+    }
+
+    //    PUT
+    @PutMapping("/{blogPostId}")
+    public BlogPost getBlogPostByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody BlogPostPayload body) {
+        return this.blogPostService.findBlogPostByIdAndUpdate(blogPostId, body);
+    }
+
+    //   DELETE
+    @DeleteMapping("/{blogPostId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void getBlogPostByIdAndDelete(@PathVariable UUID blogPostId) {
+        this.blogPostService.findByIdAndDelete(blogPostId);
     }
 }

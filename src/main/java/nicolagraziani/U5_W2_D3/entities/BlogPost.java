@@ -1,5 +1,6 @@
 package nicolagraziani.U5_W2_D3.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "author")
 public class BlogPost {
     @Id
     @GeneratedValue
@@ -28,6 +29,7 @@ public class BlogPost {
     private int readingTime; //Minute
     @ManyToOne
     @JoinColumn(nullable = false)
+    @JsonBackReference
     private Author author;
 
     public BlogPost(String category, String title, String content, int readingTime, Author author) {
