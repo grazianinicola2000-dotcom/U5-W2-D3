@@ -1,12 +1,16 @@
 package nicolagraziani.U5_W2_D3.controllers;
 
 import nicolagraziani.U5_W2_D3.entities.Author;
+import nicolagraziani.U5_W2_D3.exceptions.ValidationException;
 import nicolagraziani.U5_W2_D3.payloads.AuthorDTO;
 import nicolagraziani.U5_W2_D3.services.AuthorService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,7 +33,11 @@ public class AuthorController {
     //    POST
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Author saveAuthor(@RequestBody AuthorDTO body) {
+    public Author saveAuthor(@RequestBody @Validated AuthorDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            List<String> errors = validation.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList();
+            throw new ValidationException(errors);
+        }
         return this.authorService.saveAuthor(body);
     }
 
@@ -41,7 +49,11 @@ public class AuthorController {
 
     //    PUT
     @PutMapping("/{authorId}")
-    public Author getAuthorByIdAndUpdate(@PathVariable UUID authorId, @RequestBody AuthorDTO body) {
+    public Author getAuthorByIdAndUpdate(@PathVariable UUID authorId, @RequestBody @Validated AuthorDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            List<String> errors = validation.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList();
+            throw new ValidationException(errors);
+        }
         return this.authorService.findAuthorByIdAndUpdate(authorId, body);
     }
 

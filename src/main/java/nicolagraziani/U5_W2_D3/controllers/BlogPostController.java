@@ -1,12 +1,16 @@
 package nicolagraziani.U5_W2_D3.controllers;
 
 import nicolagraziani.U5_W2_D3.entities.BlogPost;
+import nicolagraziani.U5_W2_D3.exceptions.ValidationException;
 import nicolagraziani.U5_W2_D3.payloads.BlogPostDTO;
 import nicolagraziani.U5_W2_D3.services.BlogPostService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,7 +33,11 @@ public class BlogPostController {
     //   POST
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public BlogPost saveBlogPost(@RequestBody BlogPostDTO body) {
+    public BlogPost saveBlogPost(@RequestBody @Validated BlogPostDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            List<String> errors = validation.getFieldErrors().stream().map(error -> error.getDefaultMessage()).toList();
+            throw new ValidationException(errors);
+        }
         return this.blogPostService.saveBlogPost(body);
     }
 
@@ -41,7 +49,11 @@ public class BlogPostController {
 
     //    PUT
     @PutMapping("/{blogPostId}")
-    public BlogPost getBlogPostByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody BlogPostDTO body) {
+    public BlogPost getBlogPostByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody @Validated BlogPostDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            List<String> errors = validation.getFieldErrors().stream().map(error -> error.getDefaultMessage()).toList();
+            throw new ValidationException(errors);
+        }
         return this.blogPostService.findBlogPostByIdAndUpdate(blogPostId, body);
     }
 
