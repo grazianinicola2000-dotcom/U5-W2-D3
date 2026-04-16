@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -62,5 +63,16 @@ public class AuthorController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void getAuthorByIdAndDelete(@PathVariable UUID authorId) {
         this.authorService.findAuthorByIdAndDelete(authorId);
+    }
+
+    //    ADD IMAGE
+    @PatchMapping("/{authorId}/profileImg")
+    public void uploadImage(@RequestParam("profile_img") MultipartFile file, @PathVariable UUID authorId) {
+//        PAYLOAD DI TIPO MULTIPART(formato per l'upload dei file)
+//        profile_img è il nome esatto che va usato al campo del FormData
+        System.out.println(file.getOriginalFilename());
+        System.out.println(file.getSize());
+        System.out.println(file.getContentType());
+        this.authorService.profileImgUpload(file, authorId);
     }
 }
