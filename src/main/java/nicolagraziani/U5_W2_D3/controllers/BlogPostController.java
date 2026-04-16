@@ -1,7 +1,7 @@
 package nicolagraziani.U5_W2_D3.controllers;
 
 import nicolagraziani.U5_W2_D3.entities.BlogPost;
-import nicolagraziani.U5_W2_D3.payloads.BlogPostPayload;
+import nicolagraziani.U5_W2_D3.payloads.BlogPostDTO;
 import nicolagraziani.U5_W2_D3.services.BlogPostService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class BlogPostController {
     //   POST
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public BlogPost saveBlogPost(@RequestBody BlogPostPayload body) {
+    public BlogPost saveBlogPost(@RequestBody BlogPostDTO body) {
         return this.blogPostService.saveBlogPost(body);
     }
 
@@ -41,7 +41,7 @@ public class BlogPostController {
 
     //    PUT
     @PutMapping("/{blogPostId}")
-    public BlogPost getBlogPostByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody BlogPostPayload body) {
+    public BlogPost getBlogPostByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody BlogPostDTO body) {
         return this.blogPostService.findBlogPostByIdAndUpdate(blogPostId, body);
     }
 

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nicolagraziani.U5_W2_D3.entities.Author;
 import nicolagraziani.U5_W2_D3.entities.BlogPost;
 import nicolagraziani.U5_W2_D3.exceptions.NotFoundException;
-import nicolagraziani.U5_W2_D3.payloads.BlogPostPayload;
+import nicolagraziani.U5_W2_D3.payloads.BlogPostDTO;
 import nicolagraziani.U5_W2_D3.repositories.BlogPostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,11 +25,11 @@ public class BlogPostService {
         this.authorService = authorService;
     }
 
-    public BlogPost saveBlogPost(BlogPostPayload body) {
-        Author author = this.authorService.findAuthorById(body.getAuthorId());
-        BlogPost newBlogPost = new BlogPost(body.getCategory(), body.getTitle(), body.getContent(), body.getReadingTime(), author);
+    public BlogPost saveBlogPost(BlogPostDTO body) {
+        Author author = this.authorService.findAuthorById(body.authorId());
+        BlogPost newBlogPost = new BlogPost(body.category(), body.title(), body.content(), body.readingTime(), author);
         this.blogPostRepository.save(newBlogPost);
-        log.info("Il Post {} è stato pubblicato", body.getTitle());
+        log.info("Il Post {} è stato pubblicato", body.title());
         return newBlogPost;
     }
 
@@ -44,13 +44,13 @@ public class BlogPostService {
         return this.blogPostRepository.findById(blogPostId).orElseThrow(() -> new NotFoundException(blogPostId));
     }
 
-    public BlogPost findBlogPostByIdAndUpdate(UUID blogPostId, BlogPostPayload body) {
+    public BlogPost findBlogPostByIdAndUpdate(UUID blogPostId, BlogPostDTO body) {
         BlogPost found = this.findBlogPostById(blogPostId);
-        Author author = this.authorService.findAuthorById(body.getAuthorId());
-        found.setCategory(body.getCategory());
-        found.setTitle(body.getTitle());
-        found.setContent(body.getContent());
-        found.setReadingTime(body.getReadingTime());
+        Author author = this.authorService.findAuthorById(body.authorId());
+        found.setCategory(body.category());
+        found.setTitle(body.title());
+        found.setContent(body.content());
+        found.setReadingTime(body.readingTime());
         found.setAuthor(author);
 
         BlogPost saved = this.blogPostRepository.save(found);

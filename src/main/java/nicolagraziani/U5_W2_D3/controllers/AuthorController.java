@@ -1,7 +1,7 @@
 package nicolagraziani.U5_W2_D3.controllers;
 
 import nicolagraziani.U5_W2_D3.entities.Author;
-import nicolagraziani.U5_W2_D3.payloads.AuthorPayload;
+import nicolagraziani.U5_W2_D3.payloads.AuthorDTO;
 import nicolagraziani.U5_W2_D3.services.AuthorService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class AuthorController {
     //    POST
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Author saveAuthor(@RequestBody AuthorPayload body) {
+    public Author saveAuthor(@RequestBody AuthorDTO body) {
         return this.authorService.saveAuthor(body);
     }
 
@@ -41,7 +41,7 @@ public class AuthorController {
 
     //    PUT
     @PutMapping("/{authorId}")
-    public Author getAuthorByIdAndUpdate(@PathVariable UUID authorId, @RequestBody AuthorPayload body) {
+    public Author getAuthorByIdAndUpdate(@PathVariable UUID authorId, @RequestBody AuthorDTO body) {
         return this.authorService.findAuthorByIdAndUpdate(authorId, body);
     }
 

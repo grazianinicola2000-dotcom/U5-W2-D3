@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nicolagraziani.U5_W2_D3.entities.Author;
 import nicolagraziani.U5_W2_D3.exceptions.BadRequestException;
 import nicolagraziani.U5_W2_D3.exceptions.NotFoundException;
-import nicolagraziani.U5_W2_D3.payloads.AuthorPayload;
+import nicolagraziani.U5_W2_D3.payloads.AuthorDTO;
 import nicolagraziani.U5_W2_D3.repositories.AuthorRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,13 +24,13 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public Author saveAuthor(AuthorPayload body) {
-        if (this.authorRepository.existsByEmail(body.getEmail())) {
-            throw new BadRequestException("L'indirizzo mail " + body.getEmail() + " è già in uso!");
+    public Author saveAuthor(AuthorDTO body) {
+        if (this.authorRepository.existsByEmail(body.email())) {
+            throw new BadRequestException("L'indirizzo mail " + body.email() + " è già in uso!");
         }
-        Author newAuthor = new Author(body.getName(), body.getSurname(), body.getEmail(), body.getDateOfBirth());
+        Author newAuthor = new Author(body.name(), body.surname(), body.email(), body.dateOfBirth());
         this.authorRepository.save(newAuthor);
-        log.info("L'autore {} {} è stato registrato correttamente", body.getSurname(), body.getName());
+        log.info("L'autore {} {} è stato registrato correttamente", body.surname(), body.name());
         return newAuthor;
     }
 
@@ -45,16 +45,16 @@ public class AuthorService {
         return this.authorRepository.findById(authorId).orElseThrow(() -> new NotFoundException(authorId));
     }
 
-    public Author findAuthorByIdAndUpdate(UUID authorId, AuthorPayload body) {
+    public Author findAuthorByIdAndUpdate(UUID authorId, AuthorDTO body) {
         Author found = this.findAuthorById(authorId);
-        if (!found.getEmail().equals(body.getEmail())) {
-            if (this.authorRepository.existsByEmail(body.getEmail()))
-                throw new BadRequestException("L'indirizzo email " + body.getEmail() + " è già in uso!");
+        if (!found.getEmail().equals(body.email())) {
+            if (this.authorRepository.existsByEmail(body.email()))
+                throw new BadRequestException("L'indirizzo email " + body.email() + " è già in uso!");
         }
-        found.setName(body.getName());
-        found.setSurname(body.getSurname());
-        found.setEmail(body.getEmail());
-        found.setDateOfBirth(body.getDateOfBirth());
+        found.setName(body.name());
+        found.setSurname(body.surname());
+        found.setEmail(body.email());
+        found.setDateOfBirth(body.dateOfBirth());
 
         Author saved = this.authorRepository.save(found);
 
